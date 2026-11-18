@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Строгая политика безопасности: код только с нашего домена, без eval, без сторонних запросов.
+       При включении рекламы её домены нужно добавить сюда (см. README.md). -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob:; worker-src 'self' blob:; frame-src 'none'; media-src 'self' blob:; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Конвертилка — конвертер файлов онлайн без загрузки на сервер</title>
+  <meta name="description" content="Бесплатно конвертируйте изображения (HEIC, PNG, JPG, WebP, AVIF, SVG), документы (DOCX, PDF, Markdown, Excel) и 3D-модели (STEP, STL, OBJ, GLB, FBX) прямо в браузере. Файлы не покидают ваш компьютер.">
+  <meta name="theme-color" content="#4f46e5">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Конвертилка — конвертер файлов прямо в браузере">
+  <meta property="og:description" content="Изображения, документы и 3D-модели. Без загрузки на сервер — приватно и быстро.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="modulepreload" href="assets/js/app.js">
+  <script type="module" src="assets/js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#tool">Перейти к конвертеру</a>
+
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="logo" href="./" aria-label="Конвертилка — на главную">
+        <img src="assets/img/favicon.svg" alt="" width="28" height="28">
+        <span>Конвертилка</span>
+      </a>
+      <nav class="nav" aria-label="Основное меню">
+        <a href="#formats">Форматы</a>
+        <a href="#privacy">Приватность</a>
+        <a href="#faq">Вопросы</a>
+        <a class="btn btn-donate btn-sm" href="support.html">♥ Поддержать</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <h1>Конвертер файлов, который <span class="accent">не&nbsp;загружает</span> ваши файлы</h1>
+      <p class="lead">Изображения, документы, таблицы и 3D-модели конвертируются прямо в вашем браузере. Ничего не отправляется на сервер — даже мы не видим ваши файлы.</p>
+      <ul class="trust">
+        <li>🔒 Файлы не покидают ваше устройство</li>
+        <li>⚡ Без очередей и лимитов</li>
+        <li>👁️ Предпросмотр перед и после</li>
+      </ul>
+    </section>
+
+    <div class="container"><div class="ad-slot" data-slot="top" aria-label="Реклама"></div></div>
+
+    <section id="tool" class="container tool">
+      <noscript><p class="pv-error">Для работы конвертера нужен включённый JavaScript.</p></noscript>
+
+      <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Выбрать файлы для конвертации">
+        <div class="drop-inner">
+          <div class="drop-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0-4 4m4-4 4 4"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          </div>
+          <p class="drop-title">Перетащите файлы сюда или <span class="link">выберите на устройстве</span></p>
+          <p class="drop-hint">Можно сразу несколько. Скриншот можно вставить через Ctrl+V.</p>
+        </div>
+        <input id="file-input" type="file" multiple hidden>
+      </div>
+
+      <!-- Рабочее окно: появляется после добавления файлов -->
+      <div id="workspace" class="workspace" hidden>
+        <div class="ws-toolbar">
+          <button id="add-more" class="btn btn-ghost btn-sm" type="button">＋ Добавить</button>
+          <div class="ws-group">
+            <select id="all-target" aria-label="Формат для всех файлов"></select>
+            <button id="convert-all" class="btn btn-primary btn-sm" type="button">Конвертировать все</button>
+          </div>
+          <div class="ws-group ws-end">
+            <button id="merge-pdf" class="btn btn-ghost btn-sm" type="button" hidden title="Все изображения из списка — в один PDF-файл">Картинки → PDF</button>
+            <button id="zip-all" class="btn btn-ghost btn-sm" type="button" disabled>Скачать ZIP</button>
+            <button id="clear-all" class="btn btn-ghost btn-sm" type="button">Очистить</button>
+          </div>
+        </div>
+        <div class="ws-body">
+          <ul id="file-list" class="file-list" aria-label="Файлы"></ul>
+          <aside id="preview-panel" class="preview-panel" aria-labelledby="pp-title">
+            <div class="pp-head">
+              <h2 id="pp-title" class="pp-title">Предпросмотр</h2>
+              <div class="pp-actions">
+                <button id="pp-expand" class="icon-btn" type="button" title="Развернуть" aria-label="Развернуть предпросмотр" aria-pressed="false">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="i-expand" d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/><path class="i-collapse" d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg>
+                </button>
+                <button id="pp-fullscreen" class="icon-btn" type="button" title="На весь экран" aria-label="Предпросмотр на весь экран">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8V3h5M21 8V3h-5M3 16v5h5M21 16v5h-5"/></svg>
+                </button>
+              </div>
+            </div>
+            <div id="pp-body" class="pp-body"></div>
+          </aside>
+        </div>
+      </div>
+
+      <details class="settings-box">
+        <summary>Настройки конвертации</summary>
+        <form id="settings" class="settings">
+          <fieldset>
+            <legend>Изображения</legend>
+            <label>Качество (JPG, WebP, AVIF, PDF): <output id="quality-value">90%</output>
+              <input type="range" name="quality" min="10" max="100" value="90" step="1">
+            </label>
+            <label>Максимальная сторона
+              <select name="maxSide">
+                <option value="0" selected>как в оригинале</option>
+                <option value="3840">3840 px (4K)</option>
+                <option value="2560">2560 px</option>
+                <option value="1920">1920 px (Full HD)</option>
+                <option value="1280">1280 px</option>
+                <option value="800">800 px</option>
+                <option value="512">512 px</option>
+                <option value="256">256 px</option>
+              </select>
+            </label>
+            <label>Фон вместо прозрачности (JPG)
+              <input type="color" name="background" value="#ffffff">
+            </label>
+          </fieldset>
+          <fieldset>
+            <legend>PDF → картинки</legend>
+            <label>Разрешение
+              <select name="dpi">
+                <option value="72">72 dpi (экран)</option>
+                <option value="150" selected>150 dpi</option>
+                <option value="300">300 dpi (печать)</option>
+              </select>
+            </label>
+          </fieldset>
+          <fieldset>
+            <legend>Таблицы → CSV</legend>
+            <label>Разделитель
+              <select name="csvSeparator">
+                <option value="comma">запятая «,»</option>
+                <option value="semicolon">точка с запятой «;» — для русского Excel</option>
+                <option value="tab">табуляция</option>
+              </select>
+            </label>
+          </fieldset>
+        </form>
+      </details>
+    </section>
+    <div class="pp-backdrop" id="pp-backdrop" hidden></div>
+
+    <section id="formats" class="container section">
+      <h2>Что умеет конвертировать</h2>
+      <div id="format-groups" class="cards">
+        <article class="card" data-group="image">
+          <h3>🖼️ Изображения</h3>
+          <p>HEIC с iPhone в JPG, WebP в PNG, SVG в PNG, создание иконок ICO, картинки в PDF. Можно уменьшить размер и выбрать качество.</p>
+          <div class="fmt-list"></div>
+          <p class="fmt-to">Сохранение: PNG, JPG, WebP, AVIF, BMP, ICO, TIFF, PDF</p>
+        </article>
+        <article class="card" data-group="document">
+          <h3>📄 Документы</h3>
+          <p>DOCX в PDF, PDF в картинки и текст, Markdown в HTML и PDF, HTML в Markdown. Кириллица поддерживается.</p>
+          <div class="fmt-list"></div>
+          <p class="fmt-to">Сохранение: PDF, HTML, Markdown, TXT, PNG, JPG</p>
+        </article>
+        <article class="card" data-group="sheet">
+          <h3>📊 Таблицы</h3>
+          <p>Excel, LibreOffice и CSV в любую сторону, выгрузка в JSON и обратно. Правильно читает CSV в кодировке Windows-1251.</p>
+          <div class="fmt-list"></div>
+          <p class="fmt-to">Сохранение: XLSX, ODS, CSV, JSON, HTML</p>
+        </article>
+        <article class="card" data-group="model">
+          <h3>🧊 3D-модели</h3>
+          <p>STEP и IGES из CAD (SolidWorks, Fusion 360, КОМПАС) в STL для печати, OBJ, FBX, glTF/GLB для веба и игр, USDZ для AR на iPhone. Интерактивный 3D-просмотр.</p>
+          <div class="fmt-list"></div>
+          <p class="fmt-to">Сохранение: STL, OBJ, PLY, GLB, glTF, USDZ</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="privacy" class="container section split">
+      <div>
+        <h2>Ваши файлы остаются у вас</h2>
+        <p>Большинство онлайн-конвертеров загружают файлы на свои серверы. Здесь вся работа выполняется на вашем устройстве с помощью JavaScript, поэтому:</p>
+        <ul class="checks">
+          <li>файлы никуда не передаются — это можно проверить во вкладке «Сеть» инструментов разработчика;</li>
+          <li>нет ограничений на размер и количество, кроме памяти вашего устройства;</li>
+          <li>после первого использования конвертер работает даже без интернета;</li>
+          <li>документы для предпросмотра открываются в изолированной песочнице без скриптов.</li>
+        </ul>
+      </div>
+      <div class="ad-slot" data-slot="side" aria-label="Реклама"></div>
+    </section>
+
+    <section class="container section">
+      <div class="support-cta">
+        <div>
+          <h2>Сайт живёт на рекламе и ваших пожертвованиях</h2>
+          <p>Поддержите проект — и получите код, который отключает рекламу на месяц.</p>
+        </div>
+        <a class="btn btn-donate" href="support.html">♥ Поддержать проект</a>
+      </div>
+    </section>
+
+    <section id="faq" class="container section faq">
+      <h2>Частые вопросы</h2>
+      <details><summary>Это правда бесплатно?</summary><p>Да. Сайт окупается рекламой и добровольными пожертвованиями. Ограничений на количество файлов нет.</p></details>
+      <details><summary>Как убедиться, что файлы не загружаются?</summary><p>Откройте инструменты разработчика (F12) → вкладка «Сеть» и сконвертируйте файл: запросов с вашими данными не будет. Можно даже отключить интернет: нужные компоненты сохраняются в браузере после первого использования, и конвертер продолжит работать.</p></details>
+      <details><summary>Почему DOCX → PDF выглядит не точь-в-точь как в Word?</summary><p>Конвертация идёт без Microsoft Word: сохраняются текст, заголовки, списки, таблицы и картинки, но сложная вёрстка (колонтитулы, обтекание, точные шрифты) может отличаться.</p></details>
+      <details><summary>Почему не открывается glTF с текстурами?</summary><p>Файл .gltf часто ссылается на внешние .bin и картинки. Из соображений безопасности сайт не обращается к другим файлам — используйте GLB (всё в одном файле) или glTF со встроенными данными.</p></details>
+      <details><summary>Модель после конвертации «лежит на боку»</summary><p>В 3D-печати (STL, 3MF) вверх смотрит ось Z, а в glTF, OBJ и FBX — ось Y. Конвертер поворачивает модель автоматически; если исходный файл был сохранён нестандартно, поверните модель в редакторе.</p></details>
+      <details><summary>Можно ли сохранить обратно в STEP?</summary><p>Нет. STEP и IGES хранят точную геометрию поверхностей, а STL, OBJ и GLB — сетку из треугольников. При конвертации деталь превращается в сетку (с точностью 0,1% от размера детали), а обратно из треугольников точную CAD-модель не восстановить. Для 3D-печати и визуализации этого достаточно.</p></details>
+      <details><summary>В каких браузерах работает?</summary><p>В актуальных Chrome, Edge, Firefox, Safari и Opera, в том числе на телефонах. Сохранение в AVIF доступно не во всех браузерах — если его нет в списке, ваш браузер его не поддерживает.</p></details>
+    </section>
+
+    <div class="container"><div class="ad-slot" data-slot="bottom" aria-label="Реклама"></div></div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <p>© <span>Конвертилка</span>. Файлы обрабатываются только в вашем браузере.</p>
+      <nav aria-label="Дополнительно">
+        <a href="privacy.html">Конфиденциальность</a>
+        <a href="support.html">Поддержать</a>
+        <a href="licenses.html">Лицензии</a>
+      </nav>
+    </div>
+  </footer>
+
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <div class="drop-overlay" aria-hidden="true"><div>Отпустите файлы, чтобы добавить</div></div>
+</body>
+</html>
