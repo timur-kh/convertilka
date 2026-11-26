@@ -3,15 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self'; connect-src 'self'">
   <title>Лицензии — Конвертилка</title>
+  <meta name="description" content="Свободные библиотеки с открытым кодом, на которых работает Конвертилка: pdf.js, FFmpeg, three.js, Mediabunny и другие, и их лицензии.">
+  <link rel="canonical" href="https://convertilka.com/licenses.html">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
   <header class="site-header">
     <div class="container header-row">
-      <a class="logo" href="./"><img src="assets/img/favicon.svg" alt="" width="28" height="28"><span>Конвертилка</span></a>
+      <a class="logo" href="./"><span>Конвертилка</span></a>
       <nav class="nav" aria-label="Основное меню"><a href="./">← К конвертеру</a></nav>
     </div>
   </header>
@@ -33,13 +37,20 @@
           <tr><td><a href="vendor/turndown/LICENSE">Turndown</a></td><td>HTML → Markdown</td><td>MIT</td></tr>
           <tr><td>UTIF.js + <a href="vendor/pako/LICENSE">pako</a></td><td>TIFF</td><td>MIT</td></tr>
           <tr><td><a href="vendor/occt/LICENSE.occt-import-js.txt">occt-import-js</a> + <a href="vendor/occt/LICENSE.occt.txt">Open CASCADE</a></td><td>Чтение STEP / IGES / BREP</td><td>LGPL-2.1</td></tr>
+          <tr><td><a href="https://github.com/ffmpegwasm/ffmpeg.wasm" rel="noopener noreferrer">ffmpeg.wasm</a> (<a href="https://ffmpeg.org/" rel="noopener noreferrer">FFmpeg</a>, x264, LAME, libvpx, Opus, Vorbis)</td><td>Видео и звук</td><td>MIT (обёртка) / GPL-2.0-or-later (ядро). Исходный код ядра: <a href="https://github.com/ffmpegwasm/ffmpeg.wasm" rel="noopener noreferrer">github.com/ffmpegwasm/ffmpeg.wasm</a></td></tr>
+          <tr><td><a href="vendor/mediabunny/LICENSE">Mediabunny</a></td><td>Кодирование видео через браузер и видеокарту (H.265, AV1, VP9, H.264)</td><td>MPL-2.0</td></tr>
+          <tr><td><a href="vendor/pdf-lib/LICENSE.md">pdf-lib</a></td><td>Объединение PDF</td><td>MIT</td></tr>
+          <tr><td><a href="vendor/djvujs/LICENSE">DjVu.js</a></td><td>Чтение DjVu</td><td>GPL-2.0. Исходный код: <a href="https://github.com/RussCoder/djvujs" rel="noopener noreferrer">github.com/RussCoder/djvujs</a></td></tr>
+          <tr><td><a href="vendor/docx-preview/LICENSE">docx-preview</a> + <a href="vendor/jszip/LICENSE.markdown">JSZip</a></td><td>Точная вёрстка документов Word</td><td>Apache-2.0 / MIT</td></tr>
+          <tr><td>@pdf-lib/fontkit</td><td>Встраивание шрифтов в PDF</td><td>MIT</td></tr>
+          <tr><td>Шрифты <a href="vendor/fonts/carlito/LICENSE">Carlito</a>, <a href="vendor/fonts/caladea/LICENSE">Caladea</a>, <a href="vendor/fonts/arimo/LICENSE">Arimo</a>, <a href="vendor/fonts/tinos/LICENSE">Tinos</a>, <a href="vendor/fonts/cousine/LICENSE">Cousine</a></td><td>Замена шрифтов Microsoft с теми же метриками</td><td>SIL OFL 1.1</td></tr>
           <tr><td>heic2any (libheif)</td><td>HEIC/HEIF с iPhone</td><td>MIT (libheif — LGPL-3.0)</td></tr>
         </tbody>
       </table>
     </div>
   </main>
   <footer class="site-footer">
-    <div class="container footer-row"><p>© Конвертилка</p><nav aria-label="Дополнительно"><a href="privacy.html">Конфиденциальность</a><a href="support.html">Поддержать</a></nav></div>
+    <div class="container footer-row"><p>© Конвертилка</p><nav aria-label="Дополнительно"><a href="privacy.html">Конфиденциальность</a></nav></div>
   </footer>
 </body>
 </html>

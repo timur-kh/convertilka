@@ -4,7 +4,7 @@ import { vendorUrl, escapeHtml } from './util.js';
 let purifier;
 async function getPurify() {
   if (!purifier) {
-    const mod = await import(vendorUrl('dompurify/purify.es.mjs'));
+    const mod = await import(vendorUrl('dompurify/purify.es.js'));
     purifier = mod.default;
     // Внешние ссылки открываются без доступа к нашей странице
     purifier.addHook('afterSanitizeAttributes', (node) => {

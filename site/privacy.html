@@ -3,50 +3,54 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self'; connect-src 'self'">
   <title>Конфиденциальность — Конвертилка</title>
-  <meta name="description" content="Как Конвертилка обращается с вашими файлами и данными.">
+  <meta name="description" content="Как Конвертилка обращается с вашими файлами и данными: файлы обрабатываются только в браузере и не отправляются на сервер.">
+  <link rel="canonical" href="https://convertilka.com/privacy.html">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
   <header class="site-header">
     <div class="container header-row">
-      <a class="logo" href="./"><img src="assets/img/favicon.svg" alt="" width="28" height="28"><span>Конвертилка</span></a>
+      <a class="logo" href="./"><span>Конвертилка</span></a>
       <nav class="nav" aria-label="Основное меню"><a href="./">← К конвертеру</a></nav>
     </div>
   </header>
 
   <main class="container page">
     <h1>Политика конфиденциальности</h1>
-    <p><i>Редакция от 18 ноября 2026 г. Перед запуском проверьте этот текст под требования вашей страны (например, 152-ФЗ или GDPR) и укажите контакты владельца.</i></p>
 
     <h2>Ваши файлы</h2>
     <p>Все файлы, которые вы выбираете на сайте, обрабатываются <b>только в вашем браузере</b>. Они не загружаются на наш сервер или серверы третьих лиц, не сохраняются и не анализируются. Когда вы закрываете вкладку, данные удаляются из памяти браузера.</p>
 
     <h2>Что хранится в браузере</h2>
     <ul>
-      <li>Код «без рекламы», если вы его ввели (в localStorage). Его можно удалить на странице «Поддержать».</li>
       <li>Копии файлов самого сайта (скрипты, стили) в кэше браузера: так страницы открываются быстрее и работают без интернета.</li>
     </ul>
 
+    <section data-ads>
     <h2>Реклама</h2>
     <p>На сайте может показываться реклама рекламных сетей (например, Рекламной сети Яндекса или Google AdSense). Эти сети могут использовать cookie и похожие технологии для показа рекламы. Рекламные сети не получают ваши файлы. Пользователи с активным кодом поддержки рекламу не видят, и рекламные скрипты для них не загружаются.</p>
-
-    <h2>Пожертвования</h2>
-    <p>Пожертвования принимаются через сторонние платёжные сервисы, и на них действуют их собственные политики конфиденциальности. Мы получаем от них только сведения, нужные, чтобы отправить вам код.</p>
+    </section>
 
     <h2>Статистика посещений</h2>
-    <p>Сайт не использует собственную аналитику и счётчики.</p>
+    <!-- Какой из двух абзацев виден, решает tools/build-pages.mjs (ANALYTICS): со счётчиками — второй -->
+    <section data-analytics-note hidden>
+      <p>Чтобы понимать, сколько людей пользуется сайтом и откуда они приходят, мы используем сервис Яндекс.Метрика (ООО «Яндекс»). Он получает обезличенные технические данные: адрес открытой страницы, источник перехода, тип устройства и браузера, примерное местоположение по IP-адресу, а также события вида «конвертация PNG → JPG». Для этого Метрика сохраняет в браузере cookie.</p>
+      <p><b>Ваши файлы, их названия и содержимое в статистику не попадают.</b> Запись действий на странице (Вебвизор) выключена.</p>
+      <p>Отключить статистику можно блокировщиком рекламы или настройками браузера — на работу конвертера это не влияет. Подробнее: <a href="https://yandex.ru/legal/metrica_termsofuse/" rel="noopener noreferrer" target="_blank">условия использования Яндекс.Метрики</a>.</p>
+    </section>
+    <p data-no-analytics>Сайт не использует счётчики посещений.</p>
 
-    <h2>Контакты</h2>
-    <p>По вопросам конфиденциальности: <i>укажите e-mail владельца сайта</i>.</p>
   </main>
 
   <footer class="site-footer">
     <div class="container footer-row">
       <p>© Конвертилка</p>
-      <nav aria-label="Дополнительно"><a href="support.html">Поддержать</a><a href="licenses.html">Лицензии</a></nav>
+      <nav aria-label="Дополнительно"><a href="licenses.html">Лицензии</a></nav>
     </div>
   </footer>
 </body>

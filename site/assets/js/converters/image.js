@@ -74,8 +74,11 @@ function sizeOf(src) {
   };
 }
 
-/** Рисует источник на canvas с учётом ограничения размера и фона (для форматов без прозрачности). */
-export function drawToCanvas(src, { maxSide = 0, background = null } = {}) {
+/**
+ * Рисует источник на canvas с учётом ограничения размера, фона (для форматов без прозрачности)
+ * и поворота rotate: 0 | 90 | 180 | 270 градусов по часовой стрелке.
+ */
+export function drawToCanvas(src, { maxSide = 0, background = null, rotate = 0 } = {}) {
   let { w, h } = sizeOf(src);
   if (!w || !h) throw new Error('Не удалось определить размер изображения');
   if (maxSide > 0 && Math.max(w, h) > maxSide) {
@@ -83,17 +86,25 @@ export function drawToCanvas(src, { maxSide = 0, background = null } = {}) {
     w = Math.max(1, Math.round(w * k));
     h = Math.max(1, Math.round(h * k));
   }
-  if (w * h > MAX_PIXELS) throw new Error(`Изображение слишком большое (${w}×${h}). Уменьшите размер в настройках.`);
+  if (w * h > MAX_PIXELS) throw new Error(`Изображение слишком большое (${w}×${h}). Уменьшите его в графическом редакторе и попробуйте снова.`);
+  const deg = ((rotate % 360) + 360) % 360;
+  const swap = deg === 90 || deg === 270;
   const canvas = document.createElement('canvas');
-  canvas.width = w;
-  canvas.height = h;
+  canvas.width = swap ? h : w;
+  canvas.height = swap ? w : h;
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingQuality = 'high';
   if (background) {
     ctx.fillStyle = background;
-    ctx.fillRect(0, 0, w, h);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
-  ctx.drawImage(src, 0, 0, w, h);
+  if (deg) {
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate((deg * Math.PI) / 180);
+    ctx.drawImage(src, -w / 2, -h / 2, w, h);
+  } else {
+    ctx.drawImage(src, 0, 0, w, h);
+  }
   return canvas;
 }
 
@@ -191,28 +202,29 @@ export async function convert(file, from, to, opts = {}) {
   const src = await decodeImage(file, from);
   const quality = opts.quality ?? 0.9;
   const maxSide = opts.maxSide || 0;
+  const rotate = opts.edit?.rotate || 0; // поворот из редактора (кнопки ↺ ↻ в предпросмотре)
   const name = `${baseName(file.name)}.${to}`;
   let blob;
   switch (to) {
     case 'jpg':
-      blob = await encodeNative(drawToCanvas(src, { maxSide, background: opts.background || '#ffffff' }), 'image/jpeg', quality);
+      blob = await encodeNative(drawToCanvas(src, { maxSide, rotate, background: opts.background || '#ffffff' }), 'image/jpeg', quality);
       break;
     case 'png':
     case 'webp':
     case 'avif':
-      blob = await encodeNative(drawToCanvas(src, { maxSide }), FORMATS[to].mime, to === 'png' ? undefined : quality);
+      blob = await encodeNative(drawToCanvas(src, { maxSide, rotate }), FORMATS[to].mime, to === 'png' ? undefined : quality);
       break;
     case 'bmp':
-      blob = encodeBmp(drawToCanvas(src, { maxSide }));
+      blob = encodeBmp(drawToCanvas(src, { maxSide, rotate }));
       break;
     case 'ico':
-      blob = await encodeIco(maxSide ? drawToCanvas(src, { maxSide }) : src);
+      blob = await encodeIco(maxSide || rotate ? drawToCanvas(src, { maxSide, rotate }) : src);
       break;
     case 'tiff':
-      blob = await encodeTiff(drawToCanvas(src, { maxSide }));
+      blob = await encodeTiff(drawToCanvas(src, { maxSide, rotate }));
       break;
     case 'pdf':
-      blob = await imagesToPdf([src], { quality, maxSide });
+      blob = await imagesToPdf([src], { quality, maxSide, rotate });
       break;
     default:
       throw new Error(`Неподдерживаемый формат: ${to}`);
@@ -222,10 +234,10 @@ export async function convert(file, from, to, opts = {}) {
 }
 
 /** Несколько изображений → один PDF (страница под каждую картинку). */
-export async function imagesToPdf(sources, { quality = 0.9, maxSide = 0 } = {}) {
+export async function imagesToPdf(sources, { quality = 0.9, maxSide = 0, rotate = 0 } = {}) {
   const pages = [];
   for (const src of sources) {
-    const canvas = drawToCanvas(src, { maxSide, background: '#ffffff' });
+    const canvas = drawToCanvas(src, { maxSide, rotate, background: '#ffffff' });
     const jpeg = await encodeNative(canvas, 'image/jpeg', quality);
     pages.push({ width: canvas.width, height: canvas.height, jpeg: new Uint8Array(await jpeg.arrayBuffer()) });
   }

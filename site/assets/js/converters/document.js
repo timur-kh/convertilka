@@ -104,7 +104,7 @@ async function prepareImagesForPdf(html) {
   return doc.body.innerHTML;
 }
 
-async function htmlToPdf(html, title) {
+export async function htmlToPdf(html, title) {
   const [pdfMake, htmlToPdfmake] = await Promise.all([getPdfMake(), getHtmlToPdfmake()]);
   const content = htmlToPdfmake(await prepareImagesForPdf(html), {
     window,
@@ -134,7 +134,19 @@ function makePdf(pdfMake, def) {
   });
 }
 
-export async function convert(file, from, to) {
+export async function convert(file, from, to, opts = {}, onProgress) {
+  // DOCX → PDF: точная вёрстка (размер страниц, колонтитулы, таблицы, шрифты с метриками Word)
+  if (from === 'docx' && to === 'pdf') {
+    try {
+      const { docxToPdf } = await import('./docx-layout.js');
+      const res = await docxToPdf(file, onProgress);
+      return [{ blob: res.blob, name: `${baseName(file.name)}.pdf`, note: `${res.pages} стр., ${res.size} — как в документе` }];
+    } catch (e) {
+      console.warn('Точная вёрстка DOCX не удалась, используем упрощённую:', e);
+      const html = await toSafeHtml(file, from);
+      return [{ blob: await htmlToPdf(html, baseName(file.name)), name: `${baseName(file.name)}.pdf`, note: 'упрощённая вёрстка: документ слишком сложный для точной' }];
+    }
+  }
   const base = baseName(file.name);
   const name = `${base}.${to}`;
   const text = (s) => new Blob(['﻿' + s], { type: 'text/plain;charset=utf-8' });
@@ -158,6 +170,17 @@ export async function convert(file, from, to) {
       return [{ blob: text(htmlToText(html)), name }];
     case 'pdf':
       return [{ blob: await htmlToPdf(html, base), name }];
+    case 'docx': {
+      const { buildDocx, htmlToBlocks } = await import('./docxwriter.js');
+      const hasImages = /<img\s/i.test(html);
+      return [{ blob: await buildDocx(htmlToBlocks(html), { title: base }), name, note: hasImages ? 'текст и оформление перенесены; картинки в DOCX не переносятся' : undefined }];
+    }
+    case 'epub':
+    case 'fb2': {
+      const { htmlToBookFile } = await import('./ebook.js');
+      const { blob, chapters } = await htmlToBookFile(html, base, to);
+      return [{ blob, name, note: `${chapters} ${chapters === 1 ? 'глава' : chapters < 5 ? 'главы' : 'глав'} — делятся по заголовкам` }];
+    }
     default:
       throw new Error(`Неподдерживаемый формат: ${to}`);
   }

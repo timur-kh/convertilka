@@ -3,3 +3,4 @@ tools/keys/
 *.pem
 .DS_Store
 Thumbs.db
+site/vendor.download/

@@ -60,6 +60,11 @@ const evaluate = async (expr) => (await send('Runtime.evaluate', { expression: e
 await send('Runtime.enable');
 await send('Log.enable');
 await send('Page.enable');
+// MOBILE=390 — открыть страницу сразу как на телефоне такой ширины
+if (process.env.MOBILE) {
+  await send('Emulation.setDeviceMetricsOverride', { width: Number(process.env.MOBILE), height: 844, deviceScaleFactor: 2, mobile: true });
+  await send('Emulation.setTouchEmulationEnabled', { enabled: true });
+}
 await send('Page.navigate', { url });
 
 const start = Date.now();

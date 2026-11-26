@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+  <meta name="robots" content="noindex">
+  <title>Страница не найдена — Конвертилка</title>
+  <!-- Сервер отдаёт эту страницу по любому несуществующему адресу (nginx: error_page 404 /404.html),
+       поэтому все пути здесь — от корня сайта. -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+  <link rel="stylesheet" href="/assets/css/style.css">
+  <script type="module" src="/assets/js/search.js"></script>
+  <script type="module" src="/assets/js/404.js"></script>
+</head>
+<body class="nf-page">
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="logo" href="/" aria-label="Конвертилка — на главную">
+        <span>Конвертилка</span>
+      </a>
+      <nav class="nav" aria-label="Основное меню">
+        <button type="button" class="search-btn" data-search aria-label="Поиск по сайту (Ctrl+K)" title="Поиск по сайту (Ctrl+K или /)"><span class="search-ic" aria-hidden="true"></span><span class="search-label">Поиск</span><kbd>Ctrl K</kbd></button>
+        <a href="/formats/">Wiki</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="nf">
+    <div class="nf-files" aria-hidden="true">
+      <span style="--x:6%;--d:0s;--g:var(--g-image)">.png</span>
+      <span style="--x:18%;--d:-6s;--g:var(--g-document)">.pdf</span>
+      <span style="--x:31%;--d:-11s;--g:var(--g-video)">.mp4</span>
+      <span style="--x:46%;--d:-3s;--g:var(--g-audio)">.mp3</span>
+      <span style="--x:60%;--d:-9s;--g:var(--g-model)">.stl</span>
+      <span style="--x:73%;--d:-14s;--g:var(--g-sheet)">.xlsx</span>
+      <span style="--x:86%;--d:-5s;--g:var(--g-document)">.docx</span>
+      <span style="--x:94%;--d:-12s;--g:var(--g-image)">.webp</span>
+    </div>
+
+    <section class="container nf-card">
+      <button type="button" class="nf-code" id="nf-code" aria-describedby="nf-format" title="Сконвертировать 404">
+        <span class="nf-digits" id="nf-digits">404</span>
+      </button>
+      <p class="nf-format" id="nf-format" aria-live="polite"><span class="nf-badge">404.dec</span> <span class="nf-hint">— нажмите, чтобы сконвертировать</span></p>
+      <div class="nf-progress" id="nf-progress" hidden><i></i></div>
+
+      <h1>Такой страницы нет</h1>
+      <p class="nf-joke" id="nf-joke">Возможно, её сконвертировали во что-то другое.</p>
+
+      <label class="nf-search">
+        <span class="search-ic" aria-hidden="true"></span>
+        <input type="search" data-search-inline placeholder="Найти на сайте: «heic в jpg», «чем открыть djvu»…" aria-label="Поиск по сайту" autocomplete="off">
+      </label>
+      <div class="nf-actions">
+        <a class="btn btn-primary" href="/">На главную — к конвертеру</a>
+        <a class="btn btn-ghost" href="/formats/">Wiki о форматах</a>
+      </div>
+    </section>
+
+    <!-- Мини-игра. В ней есть чит-код — подсказка в консоли браузера. -->
+    <section class="container nf-game" id="nf-game" aria-label="Мини-игра «Сортировщик файлов»">
+      <div class="nf-game-head">
+        <strong>🕹️ Пока вы здесь — сыграйте в «Сортировщик файлов»</strong>
+        <span class="nf-game-stats"><span id="nf-lives">❤️❤️❤️</span> · Счёт: <b id="nf-score">0</b> · Рекорд: <b id="nf-best">0</b></span>
+      </div>
+      <canvas id="nf-canvas" width="900" height="420" aria-label="Игровое поле"></canvas>
+      <p class="nf-game-help">Ловите файлы конвертером — мышью, пальцем или стрелками. Пропустили файл — минус жизнь. <b>.exe</b> не ловить: это вирус!</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-row">
+      <span>© Конвертилка. Файлы обрабатываются только в вашем браузере.</span>
+      <nav aria-label="Документы"><a href="/privacy.html">Конфиденциальность</a><a href="/licenses.html">Лицензии</a></nav>
+    </div>
+  </footer>
+</body>
+</html>

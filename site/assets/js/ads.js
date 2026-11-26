@@ -1,8 +1,6 @@
-// Рекламные блоки. Скрипт рекламной сети подключается, только если:
-//   1) реклама включена в config.js, 2) у посетителя нет активного кода «без рекламы».
+// Рекламные блоки. Скрипт рекламной сети подключается, только если реклама включена в config.js.
 // Места под рекламу размечены в HTML как <div class="ad-slot" data-slot="top|side|bottom">.
 import { CONFIG } from './config.js';
-import { status } from './supporter.js';
 
 function injectScript(src, attrs = {}) {
   const s = document.createElement('script');
@@ -52,8 +50,7 @@ function setupAdsense(slots) {
 export async function initAds() {
   const slots = [...document.querySelectorAll('.ad-slot')];
   if (!slots.length) return;
-  const { active } = await status();
-  if (!CONFIG.ads.enabled || active) {
+  if (!CONFIG.ads.enabled) {
     slots.forEach((s) => s.remove());
     document.documentElement.classList.add('no-ads');
     return;
